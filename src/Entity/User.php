@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,6 +28,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'integer')]
     private $bonusCount;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Prize::class)]
+    private $receivedPrizes;
+
+    public function __construct()
+    {
+        $this->receivedPrizes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +115,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBonusCount(int $bonusCount): self
     {
         $this->bonusCount = $bonusCount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Prize>
+     */
+    public function getReceivedPrizes(): Collection
+    {
+        return $this->receivedPrizes;
+    }
+
+    public function addReceivedPrize(Prize $receivedPrize): self
+    {
+        if (!$this->receivedPrizes->contains($receivedPrize)) {
+            $this->receivedPrizes[] = $receivedPrize;
+            $receivedPrize->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceivedPrize(Prize $receivedPrize): self
+    {
+        if ($this->receivedPrizes->removeElement($receivedPrize)) {
+            // set the owning side to null (unless already changed)
+            if ($receivedPrize->getUser() === $this) {
+                $receivedPrize->setUser(null);
+            }
+        }
 
         return $this;
     }
