@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PrizeRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PrizeRepository::class)]
@@ -35,5 +36,25 @@ class Prize
         $this->user = $user;
 
         return $this;
+    }
+
+    public static function getAvailableTypes(EntityManagerInterface $entityManager) : array
+    {
+        $availableTypes[] = 'bonus';
+
+        $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
+            'paramName' => 'available_money'
+        ));
+
+        if ($availableMoney->getValue() > 0) {
+            $availableTypes[] = 'money';
+        }
+
+        $count = $entityManager->getRepository(AvailableThing::class)->count(array());
+        if ($count > 0) {
+            $availableTypes[] = 'thing';
+        }
+
+        return $availableTypes;
     }
 }
