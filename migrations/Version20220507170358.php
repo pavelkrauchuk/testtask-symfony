@@ -21,13 +21,16 @@ final class Version20220507170358 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE available_things (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('DROP INDEX param_name ON parameters');
+        $this->addSql('INSERT INTO `available_things` (`id`, `name`) VALUES (NULL, \'Билет на концерт\')');
+        $this->addSql('INSERT INTO `available_things` (`id`, `name`) VALUES (NULL, \'Подарочный сертификат\')');
+        $this->addSql('INSERT INTO `available_things` (`id`, `name`) VALUES (NULL, \'Кофеварка\')');
+        $this->addSql('INSERT INTO `available_things` (`id`, `name`) VALUES (NULL, \'Мобильный телефон\')');
+        $this->addSql('INSERT INTO `available_things` (`id`, `name`) VALUES (NULL, \'Пицца\')');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('DROP TABLE available_things');
-        $this->addSql('CREATE UNIQUE INDEX param_name ON parameters (param_name)');
     }
 }
