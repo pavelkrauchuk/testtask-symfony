@@ -47,6 +47,18 @@ class AvailableThingRepository extends ServiceEntityRepository
         }
     }
 
+    public function getRandomThing() : AvailableThing
+    {
+        $thing = $this->createQueryBuilder('a')
+            ->select('a')
+            ->orderBy('RAND()')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+
+        return $thing[0];
+    }
+
 //    /**
 //     * @return AvailableThing[] Returns an array of AvailableThing objects
 //     */
