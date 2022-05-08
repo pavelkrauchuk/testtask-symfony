@@ -1,10 +1,12 @@
 <td>
     {% if prize.isAdmissed == false %}
-        <form method="post" action="" style="display: inline-block">
-            <button type="button" class="btn btn-success">Принять</button>
+        <form method="post" action="{{ path('app_bonus_to_account', { id: prize.id }) }}" style="display: inline-block">
+            <input type="hidden" name="token" value="{{ csrf_token('add-to-account') }}">
+            <button type="submit" class="btn btn-success">Принять</button>
         </form>
-        <form method="post" action="" style="display: inline-block">
-            <button type="button" class="btn btn-danger">Отказаться</button>
+        <form method="post" action="{{ path('app_bonus_reject', { id: prize.id }) }}" style="display: inline-block">
+            <input type="hidden" name="token" value="{{ csrf_token('reject-bonus') }}">
+            <button type="submit" class="btn btn-danger">Отказаться</button>
         </form>
     {% endif %}
     {% if prize.isAdmissed %}
