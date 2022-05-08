@@ -19,10 +19,7 @@ class Bonus extends Prize
     #[ORM\Column(type: 'boolean')]
     private $isAdmissed;
 
-//    public function getId(): ?int
-//    {
-//        return $this->id;
-//    }
+    protected $type = 'bonus';
 
     public function getAmount(): ?int
     {

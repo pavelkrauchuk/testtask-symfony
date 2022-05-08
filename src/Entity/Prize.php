@@ -21,6 +21,8 @@ class Prize
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
+    protected $type;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,6 +31,11 @@ class Prize
     public function getUser(): ?User
     {
         return $this->user;
+    }
+
+    public function getType() : string
+    {
+        return $this->type;
     }
 
     public function setUser(?User $user): self

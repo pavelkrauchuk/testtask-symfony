@@ -19,10 +19,7 @@ class Thing extends Prize
     #[ORM\Column(type: 'boolean')]
     private $isShipped;
 
-//    public function getId(): ?int
-//    {
-//        return $this->id;
-//    }
+    protected $type = 'thing';
 
     public function getName(): ?string
     {

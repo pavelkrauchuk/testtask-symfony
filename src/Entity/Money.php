@@ -22,10 +22,7 @@ class Money extends Prize
     #[ORM\Column(type: 'boolean')]
     private $isTransferred;
 
-//    public function getId(): ?int
-//    {
-//        return $this->id;
-//    }
+    protected $type = 'money';
 
     public function getAmount(): ?float
     {
