@@ -1,0 +1,19 @@
+<td>
+    {% if prize.isConverted == false and prize.isTransferred == false %}
+    <form method="post" action="" style="display: inline-block">
+        <button type="button" class="btn btn-warning">В бонусы</button>
+    </form>
+    <form method="post" action="" style="display: inline-block">
+        <button type="button" class="btn btn-success">В банк</button>
+    </form>
+    <form method="post" action="" style="display: inline-block">
+        <button type="button" class="btn btn-danger">Отказаться</button>
+    </form>
+    {% endif %}
+    {% if prize.isConverted %}
+    Конвертирован в бонусные баллы
+    {% endif %}
+    {% if prize.isTransferred %}
+    Переведен на счет в банке
+    {% endif %}
+</td>

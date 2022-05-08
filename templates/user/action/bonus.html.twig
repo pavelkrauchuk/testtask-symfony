@@ -1,0 +1,13 @@
+<td>
+    {% if prize.isAdmissed == false %}
+        <form method="post" action="" style="display: inline-block">
+            <button type="button" class="btn btn-success">Принять</button>
+        </form>
+        <form method="post" action="" style="display: inline-block">
+            <button type="button" class="btn btn-danger">Отказаться</button>
+        </form>
+    {% endif %}
+    {% if prize.isAdmissed %}
+        Зачислен на бонусный счет
+    {% endif %}
+</td>
