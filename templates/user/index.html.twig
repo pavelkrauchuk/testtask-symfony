@@ -22,6 +22,11 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" disabled>
+                        Бонусный счет: {{ app.user.bonusCount }} баллов
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ logout_path() }}">Выход</a>
                 </li>
             </ul>
@@ -31,8 +36,54 @@
 
 <div class="container">
     <p>Нажми на кнопку снизу и получи случайный приз: деньги, предмет или бонусные баллы.</p>
-    <form method="post">
+    <form method="post" action="{{ path('app_get_prize') }}">
         <button class="btn btn-primary" type="submit">Получить</button>
     </form>
+
+    {% if prizes|length > 0 %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Тип</th>
+            <th scope="col">Количество</th>
+            <th scope="col">Название</th>
+            <th scope="col">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for prize in prizes %}
+        <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ prize.type }}</td>
+            {% if prize.type == 'money' or prize.type == 'bonus' %}
+            <td>{{ prize.amount }}</td>
+            {% else %}
+            <td></td>
+            {% endif %}
+            {% if prize.type == 'thing' %}
+            <td>{{ prize.name }}</td>
+            {% else %}
+            <td></td>
+            {% endif %}
+
+            {% if prize.type == 'money' %}
+                {{ include('/user/action/money.html.twig') }}
+            {% endif %}
+
+            {% if prize.type == 'bonus' %}
+                {{ include('/user/action/bonus.html.twig') }}
+            {% endif %}
+
+            {% if prize.type == 'thing' %}
+                {{ include('/user/action/thing.html.twig') }}
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Вы пока не получили ни одного приза.</p>
+    {% endif %}
 </div>
 {% endblock %}
