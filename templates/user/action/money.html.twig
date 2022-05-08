@@ -1,13 +1,16 @@
 <td>
     {% if prize.isConverted == false and prize.isTransferred == false %}
-    <form method="post" action="" style="display: inline-block">
-        <button type="button" class="btn btn-warning">В бонусы</button>
+    <form method="post" action="{{ path('app_money_to_bonus', { id: prize.id }) }}" style="display: inline-block">
+        <input type="hidden" name="token" value="{{ csrf_token('convert-money-to-bonus') }}">
+        <button type="submit" class="btn btn-warning">В бонусы</button>
     </form>
-    <form method="post" action="" style="display: inline-block">
-        <button type="button" class="btn btn-success">В банк</button>
+    <form method="post" action="{{ path('app_money_to_bank', { id: prize.id }) }}" style="display: inline-block">
+        <input type="hidden" name="token" value="{{ csrf_token('transfer-money') }}">
+        <button type="submit" class="btn btn-success">В банк</button>
     </form>
-    <form method="post" action="" style="display: inline-block">
-        <button type="button" class="btn btn-danger">Отказаться</button>
+    <form method="post" action="{{ path('app_money_reject', { id: prize.id }) }}" style="display: inline-block">
+        <input type="hidden" name="token" value="{{ csrf_token('reject-money') }}">
+        <button type="submit" class="btn btn-danger">Отказаться</button>
     </form>
     {% endif %}
     {% if prize.isConverted %}
