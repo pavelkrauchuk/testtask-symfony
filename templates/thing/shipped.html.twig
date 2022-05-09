@@ -1,0 +1,9 @@
+{% extends 'user/index.html.twig' %}
+
+{% block title %}Ваш подарок уже в пути!{% endblock %}
+
+{% block content %}
+<img src="/images/truck-fast-solid.svg" width="72" height="57">
+<p>Ваш подарок "{{ prize.name }}" уже в пути!</p>
+<a href="{{ path('app_user_profile') }}">Вернуться к списку подарков</a>
+{% endblock %}
