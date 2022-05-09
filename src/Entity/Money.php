@@ -6,7 +6,7 @@ use App\Repository\MoneyRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MoneyRepository::class)]
-class Money extends Prize
+class Money extends Prize implements \JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -65,5 +65,19 @@ class Money extends Prize
         parent::setUser($user);
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'id' => $this->id,
+            'amount' => $this->amount,
+            'isConverted' => $this->isConverted,
+            'isTransferred' => $this->isTransferred,
+            'type' => $this->type,
+        );
     }
 }
