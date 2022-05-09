@@ -33,8 +33,8 @@
         </div>
     </div>
 </nav>
-
 <div class="container">
+    {% block content %}
     <p>Нажми на кнопку снизу и получи случайный приз: деньги, предмет или бонусные баллы.</p>
     <form method="post" action="{{ path('app_get_prize') }}">
         <button class="btn btn-primary" type="submit">Получить</button>
@@ -85,5 +85,7 @@
     {% else %}
     <p>Вы пока не получили ни одного приза.</p>
     {% endif %}
+    {% endblock %}
 </div>
+
 {% endblock %}
