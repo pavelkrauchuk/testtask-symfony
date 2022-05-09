@@ -1,13 +1,15 @@
 <td>
     {% if prize.isShipped == false %}
-        <form method="post" action="" style="display: inline-block">
-            <button type="button" class="btn btn-success">Выслать</button>
+        <form method="post" action="{{ path('app_thing_ship_to_user', { id: prize.id }) }}" style="display: inline-block">
+            <input type="hidden" name="token" value="{{ csrf_token('ship-thing-to-user') }}">
+            <button type="submit" class="btn btn-success">Выслать</button>
         </form>
-        <form method="post" action="" style="display: inline-block">
-            <button type="button" class="btn btn-danger">Отказаться</button>
+        <form method="post" action="{{ path('app_thing_reject', { id: prize.id }) }}" style="display: inline-block">
+            <input type="hidden" name="token" value="{{ csrf_token('reject-thing') }}">
+            <button type="submit" class="btn btn-danger">Отказаться</button>
         </form>
     {% endif %}
     {% if prize.isShipped %}
-        Отправлен Вам почтой
+    Отправлен Вам почтой
     {% endif %}
 </td>
