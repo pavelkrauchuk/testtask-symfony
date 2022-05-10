@@ -50,6 +50,12 @@ class MoneyController extends AbstractController
             $user = $this->getUser();
 
             if ($money?->getUser() == $user && $money->getIsConverted() == false && $money->getIsTransferred() == false) {
+                $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
+                    'paramName' => 'available_money'
+                ));
+
+                $availableMoney->setValue($availableMoney->getValue() + $money->getAmount());
+                $entityManager->persist($availableMoney);
                 $entityManager->remove($money);
                 $entityManager->flush();
             }
