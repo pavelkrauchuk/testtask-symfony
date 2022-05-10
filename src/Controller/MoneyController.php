@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Money;
 use App\Entity\Parameters;
+use App\MoneyTransfer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,9 +68,13 @@ class MoneyController extends AbstractController
             $user = $this->getUser();
 
             if ($money?->getUser() == $user && $money->getIsConverted() == false && $money->getIsTransferred() == false) {
+                MoneyTransfer::transfer($money);
 
-                throw new \Exception('TODO Сделать запрос к API');
-                // TODO Сделать запрос к API
+                $money->setIsTransferred(true);
+                $entityManager->persist($money);
+                $entityManager->flush();
+
+                return $this->render('money/transferred.html.twig', array('prize' => $money));
             }
         }
 
