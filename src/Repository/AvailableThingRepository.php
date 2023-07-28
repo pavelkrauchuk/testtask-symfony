@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\AvailableThing;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,16 +48,28 @@ class AvailableThingRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @throws Exception
+     * @throws \ReflectionException
+     * @throws ORMException
+     */
     public function getRandomThing() : AvailableThing
     {
-        $thing = $this->createQueryBuilder('a')
-            ->select('a')
-            ->orderBy('RAND()')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getResult();
+        $sql = /** @lang SQL */ 'SELECT * FROM available_things ORDER BY RANDOM() LIMIT 1';
+        $result = $this->getEntityManager()->getConnection()->executeQuery($sql)->fetchAssociative();
 
-        return $thing[0];
+        $entityMetadata = $this->getEntityManager()->getClassMetadata(AvailableThing::class);
+        $thing = new AvailableThing();
+
+        foreach ($result as $property => $value) {
+            if ($entityMetadata->hasField($property)) {
+                $reflectionProperty = new \ReflectionProperty(AvailableThing::class, $property);
+                $reflectionProperty->setAccessible(true);
+                $reflectionProperty->setValue($thing, $value);
+            }
+        }
+
+        return $this->getEntityManager()->getReference(AvailableThing::class, $thing->getId());
     }
 
 //    /**

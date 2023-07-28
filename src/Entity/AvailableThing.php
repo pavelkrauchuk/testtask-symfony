@@ -17,11 +17,6 @@ class AvailableThing
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    public function __construct(Thing $thing)
-    {
-        $this->name = $thing->getName();
-    }
-
     public function getId(): ?int
     {
         return $this->id;

@@ -45,8 +45,9 @@ class ThingController extends AbstractController
             $thing = $entityManager->getRepository(Thing::class)->findOneBy(array('id' => $id));
             $user = $this->getUser();
 
-            if ($thing->getUser() == $user && $thing->getIsShipped() == false) {
-                $availableThing = new AvailableThing($thing);
+            if ($thing->getUser() === $user && $thing->getIsShipped() === false) {
+                $availableThing = new AvailableThing();
+                $availableThing->setName($thing->getName());
 
                 $entityManager->persist($availableThing);
                 $entityManager->remove($thing);
