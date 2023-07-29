@@ -17,6 +17,8 @@ services:
     volumes:
       - ./:/symfony
     container_name: testtask-symfony-php-fpm
+    environment:
+      APP_ENV: dev
     depends_on:
       - postgres
 
