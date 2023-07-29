@@ -1,6 +1,25 @@
 version: '3'
 
 services:
+  nginx:
+    build:
+      context: ./docker/nginx
+    volumes:
+      - ./:/symfony
+    container_name: testtask-symfony-nginx
+    restart: always
+    ports:
+      - "8081:80"
+
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+    volumes:
+      - ./:/symfony
+    container_name: testtask-symfony-php-fpm
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:15-alpine
     volumes:
@@ -10,15 +29,11 @@ services:
     container_name: testtask-symfony-postgres
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
-      POSTGRES_USER: ${POSTGRES_USER:-symfony}
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: symfony
     ports:
-      - "5433:5432"
-
-  mailer:
-    image: schickling/mailcatcher
-    ports: [ 1025, 1080 ]
+      - "5434:5432"
 
 volumes:
   postgres:
