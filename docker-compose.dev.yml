@@ -6,7 +6,7 @@ services:
       context: ./docker/nginx
     volumes:
       - ./:/symfony
-    container_name: testtask-symfony-nginx
+    container_name: testtask-symfony-dev-nginx
     restart: always
     ports:
       - "8081:80"
@@ -16,7 +16,7 @@ services:
       context: ./docker/php-fpm
     volumes:
       - ./:/symfony
-    container_name: testtask-symfony-php-fpm
+    container_name: testtask-symfony-dev-php-fpm
     environment:
       APP_ENV: dev
     depends_on:
@@ -28,7 +28,7 @@ services:
       - postgres:/var/lib/postgresql/data:rw
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
-    container_name: testtask-symfony-postgres
+    container_name: testtask-symfony-dev-postgres
     restart: always
     environment:
       POSTGRES_DB: app
