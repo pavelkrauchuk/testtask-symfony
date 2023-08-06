@@ -18,7 +18,7 @@ services:
     depends_on:
       - postgres
     command: >
-      bash -c "It will be starting test here"
+      bash -c "echo 'It will be starting test here'"
 
   postgres:
     image: postgres:15-alpine
