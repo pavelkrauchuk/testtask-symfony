@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+    container_name: testtask-symfony-test-nginx
+    restart: always
+    ports:
+      - "8081:80"
+
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+    container_name: testtask-symfony-test-php-fpm
+    environment:
+      APP_ENV: test
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: testtask-symfony-test-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: symfony
+    ports:
+      - "5432"
