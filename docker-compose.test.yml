@@ -17,8 +17,6 @@ services:
       APP_ENV: test
     depends_on:
       - postgres
-    command: >
-      bash -c "echo 'It will be starting test here'"
 
   postgres:
     image: postgres:15-alpine
