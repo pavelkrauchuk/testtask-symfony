@@ -12,6 +12,8 @@ services:
   php-fpm:
     build:
       context: ./docker/php-fpm
+    volumes:
+      - ./:/symfony
     container_name: testtask-symfony-test-php-fpm
     environment:
       APP_ENV: test
