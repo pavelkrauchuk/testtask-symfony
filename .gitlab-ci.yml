@@ -1,15 +1,21 @@
+image: docker:latest
+
+services:
+  - name: docker:dind
+    alias: docker
+    command: ["--tls=false"]
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
 stages:
   - test
 
-default:
-  before_script:
-    - echo "Starting test environment"
-    - docker-compose -f docker-compose.test.yml up --build -d
-  after_script:
-    - echo "Stopping test environment"
-    - docker-compose -f docker-compose.test.yml down
-
-test-job:
+php-cs:
   stage: test
   script:
-    - docker-compose -f docker-compose.test.yml exec -T php-fpm php -v
+    - docker-compose -f docker-compose.test.yml up --build -d
+    - docker-compose -f docker-compose.test.yml exec -T php-fpm composer install
+    - docker-compose -f docker-compose.test.yml exec -T php-fpm php ./vendor/bin/phpcs ./src
