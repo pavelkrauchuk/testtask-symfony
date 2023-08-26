@@ -1,5 +1,9 @@
 image: docker:latest
 
+cache:
+  paths:
+    - vendor/
+
 services:
   - name: docker:dind
     alias: docker
