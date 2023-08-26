@@ -33,7 +33,7 @@ class Prize
         return $this->user;
     }
 
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -45,7 +45,7 @@ class Prize
         return $this;
     }
 
-    public static function getAvailableTypes(EntityManagerInterface $entityManager) : array
+    public static function getAvailableTypes(EntityManagerInterface $entityManager): array
     {
         $availableTypes[] = 'bonus';
 

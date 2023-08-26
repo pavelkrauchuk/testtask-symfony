@@ -47,7 +47,7 @@ class MoneyRepository extends ServiceEntityRepository
         }
     }
 
-    public function getNotTransferred(int $limit) : array
+    public function getNotTransferred(int $limit): array
     {
         $dql = 'SELECT m FROM App\Entity\Money m WHERE m.isTransferred = false AND m.isConverted = false';
         return $this->getEntityManager()->createQuery($dql)->setMaxResults($limit)->getArrayResult();
@@ -59,7 +59,7 @@ class MoneyRepository extends ServiceEntityRepository
         $this->getEntityManager()->createQuery($dql)->execute();
     }
 
-    public function getNotTransferredCount() : int
+    public function getNotTransferredCount(): int
     {
         return $this->getEntityManager()->getRepository(Money::class)->count(array(
             'isTransferred' => false,

@@ -53,7 +53,7 @@ class AvailableThingRepository extends ServiceEntityRepository
      * @throws \ReflectionException
      * @throws ORMException
      */
-    public function getRandomThing() : AvailableThing
+    public function getRandomThing(): AvailableThing
     {
         $sql = /** @lang SQL */ 'SELECT * FROM available_things ORDER BY RANDOM() LIMIT 1';
         $result = $this->getEntityManager()->getConnection()->executeQuery($sql)->fetchAssociative();
