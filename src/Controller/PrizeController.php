@@ -57,7 +57,6 @@ class PrizeController extends AbstractController
 
             $entityManager->persist($prize);
             $entityManager->remove($thing);
-
         }
 
         $entityManager->flush();

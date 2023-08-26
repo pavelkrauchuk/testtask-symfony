@@ -22,7 +22,11 @@ class MoneyController extends AbstractController
             $money = $entityManager->getRepository(Money::class)->findOneBy(array('id' => $id));
             $user = $this->getUser();
 
-            if ($money?->getUser() == $user && $money->getIsConverted() == false && $money->getIsTransferred() == false) {
+            if (
+                $money?->getUser() == $user &&
+                $money->getIsConverted() == false &&
+                $money->getIsTransferred() == false
+            ) {
                 $conversionRate = $entityManager->getRepository(Parameters::class)->findOneBy(array(
                     'paramName' => 'bonus_to_money_conversion_rate'
                 ));
@@ -41,7 +45,7 @@ class MoneyController extends AbstractController
     }
 
     #[Route('/rejectMoney/{id}', name: 'app_money_reject')]
-    public function rejectMoney(Request $request, EntityManagerInterface $entityManager, string $id) : Response
+    public function rejectMoney(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
         $submittedToken = $request->request->get('token');
 
@@ -49,7 +53,11 @@ class MoneyController extends AbstractController
             $money = $entityManager->getRepository(Money::class)->findOneBy(array('id' => $id));
             $user = $this->getUser();
 
-            if ($money?->getUser() == $user && $money->getIsConverted() == false && $money->getIsTransferred() == false) {
+            if (
+                $money?->getUser() == $user &&
+                $money->getIsConverted() == false &&
+                $money->getIsTransferred() == false
+            ) {
                 $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
                     'paramName' => 'available_money'
                 ));
@@ -65,7 +73,7 @@ class MoneyController extends AbstractController
     }
 
     #[Route('/transferMoney/{id}', name: 'app_money_to_bank')]
-    public function transferToBank(Request $request, EntityManagerInterface $entityManager, string $id) : Response
+    public function transferToBank(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
         $submittedToken = $request->request->get('token');
 
@@ -73,7 +81,11 @@ class MoneyController extends AbstractController
             $money = $entityManager->getRepository(Money::class)->findOneBy(array('id' => $id));
             $user = $this->getUser();
 
-            if ($money?->getUser() == $user && $money->getIsConverted() == false && $money->getIsTransferred() == false) {
+            if (
+                $money?->getUser() == $user &&
+                $money->getIsConverted() == false &&
+                $money->getIsTransferred() == false
+            ) {
                 MoneyTransfer::transfer($money);
 
                 $money->setIsTransferred(true);
