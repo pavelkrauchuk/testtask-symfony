@@ -22,4 +22,8 @@ php-cs:
   script:
     - docker-compose -f docker-compose.test.yml up --build -d
     - docker-compose -f docker-compose.test.yml exec -T php-fpm composer install
-    - docker-compose -f docker-compose.test.yml exec -T php-fpm php ./vendor/bin/phpcs ./src
+    - docker-compose -f docker-compose.test.yml exec -T php-fpm php ./vendor/bin/phpcs --report=junit --report-file=php_cs_results.xml ./src
+  artifacts:
+    reports:
+      junit: php_cs_results.xml
+    when: always
