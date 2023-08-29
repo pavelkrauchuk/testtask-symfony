@@ -31,19 +31,25 @@ class TransferMoneyCommand extends Command
     {
         $this
             ->addArgument('amount', InputArgument::OPTIONAL, 'Количество передаваемых призов за итерацию')
-            ->addOption('simulate', null, InputOption::VALUE_NONE, 'Только отображает количество готовых к передаче призов без их реальной отправки')
+            ->addOption(
+                'simulate',
+                null,
+                InputOption::VALUE_NONE,
+                'Только отображает количество готовых к передаче призов без их реальной отправки'
+            )
             ->setHelp(<<<HELP
-Команда <info>%command.name%</info> переводит ранее не переведенные денежные призы всех пользователей на их счета в банке. 
-Принимает один обязательный числовой аргумент, который определяет количество передаваемых призов за одну итерацию:
+                Команда <info>%command.name%</info> переводит ранее не переведенные денежные призы всех пользователей
+                на их счета в банке. Принимает один обязательный числовой аргумент, который определяет количество
+                передаваемых призов за одну итерацию:
 
-    <info>php %command.full_name% <amount-prizes></info>
+                <info>php %command.full_name% <amount-prizes></info>
 
-Использование параментра --simulate позволяет увидеть количество готовых к передаче призов без их реальной отправки.
+                Использование параментра --simulate позволяет увидеть количество готовых к передаче призов без их
+                реальной отправки.
 
-    <info>php %command.full_name% --simulate</info>
-HELP
-)
-        ;
+                <info>php %command.full_name% --simulate</info>
+                HELP
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -58,7 +64,8 @@ HELP
             if (is_numeric($amount)) {
                 $arMoneyId = array();
 
-                while ($arMoney = $this->entityManager->getRepository(Money::class)->getNotTransferred(intval($amount))) {
+                $moneyRepository = $this->entityManager->getRepository(Money::class);
+                while ($arMoney = $moneyRepository->getNotTransferred((int) ($amount))) {
                     foreach ($arMoney as $money) {
                         $arMoneyId[] = $money['id'];
                     }

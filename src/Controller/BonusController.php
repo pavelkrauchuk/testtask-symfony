@@ -34,7 +34,7 @@ class BonusController extends AbstractController
     }
 
     #[Route('/rejectBonus/{id}', name: 'app_bonus_reject')]
-    public function rejectBonus(Request $request, EntityManagerInterface $entityManager, string $id) : Response
+    public function rejectBonus(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
         $submittedToken = $request->request->get('token');
 
