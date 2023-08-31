@@ -37,3 +37,15 @@ php-cs:
     reports:
       junit: php_cs_results.xml
     when: always
+
+php-stan:
+  stage: code-quality
+  image: pavelkrauchuk/php-fpm-8.2-symfony
+  variables:
+    APP_ENV: test
+  script:
+    - php vendor/bin/phpstan analyse --error-format=junit src > php_stan_results.xml
+  artifacts:
+    reports:
+      junit: php_stan_results.xml
+    when: always
