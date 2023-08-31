@@ -15,18 +15,24 @@ variables:
   DOCKER_TLS_CERTDIR: ""
 
 stages:
-  - test
+  - build
+  - code-quality
+
+composer:
+  stage: build
+  image: pavelkrauchuk/php-fpm-8.2-symfony
+  variables:
+    APP_ENV: test
+  script:
+    - composer install
 
 php-cs:
+  stage: code-quality
   image: pavelkrauchuk/php-fpm-8.2-symfony
-  stage: test
+  variables:
+    APP_ENV: test
   script:
-    - ls
-    # - docker run -d pavelkrauchuk/php-fpm-8.2-symfony -e "APP_ENV=test" --name php-fpm -v ./:/symfony
-    # - docker exec -T php-fmp composer install
-    # - docker-compose -f docker-compose.test.yml up --build -d
-    # - docker-compose -f docker-compose.test.yml exec -T php-fpm composer install
-    # - docker-compose -f docker-compose.test.yml exec -T php-fpm php ./vendor/bin/phpcs --report=junit --report-file=php_cs_results.xml ./src
+    - php ./vendor/bin/phpcs --report=junit --report-file=php_cs_results.xml ./src
   artifacts:
     reports:
       junit: php_cs_results.xml
