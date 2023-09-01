@@ -30,14 +30,16 @@ class PrizeController extends AbstractController
                 ->setIsConverted(false)
                 ->setUser($currentUser);
 
-            $entityManager->persist($prize);
-
             $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
                 'paramName' => 'available_money'
             ));
 
-            $availableMoney->setValue($availableMoney->getValue() - $moneyValue);
-            $entityManager->persist($availableMoney);
+            if ($amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
+                $availableMoney->setValue($amount - $moneyValue);
+
+                $entityManager->persist($availableMoney);
+                $entityManager->persist($prize);
+            }
         }
 
         if ($prize instanceof Bonus) {

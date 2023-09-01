@@ -24,7 +24,7 @@ class Money extends Prize implements \JsonSerializable
 
     protected $type = 'money';
 
-    public function getAmount(): ?float
+    public function getAmount(): float
     {
         return $this->amount;
     }
@@ -36,7 +36,7 @@ class Money extends Prize implements \JsonSerializable
         return $this;
     }
 
-    public function getIsConverted(): ?bool
+    public function getIsConverted(): bool
     {
         return $this->isConverted;
     }
@@ -48,7 +48,7 @@ class Money extends Prize implements \JsonSerializable
         return $this;
     }
 
-    public function getIsTransferred(): ?bool
+    public function getIsTransferred(): bool
     {
         return $this->isTransferred;
     }

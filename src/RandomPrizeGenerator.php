@@ -5,6 +5,7 @@ namespace App;
 use App\Entity\AvailableThing;
 use App\Entity\Parameters;
 use App\Entity\Prize;
+use App\Repository\AvailableThingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Parameter;
@@ -45,6 +46,9 @@ class RandomPrizeGenerator
 
     public static function getRandomAvailableThing(EntityManagerInterface $entityManager): AvailableThing
     {
-        return $entityManager->getRepository(AvailableThing::class)->getRandomThing();
+        /** @var AvailableThingRepository $availableThingRepository */
+        $availableThingRepository = $entityManager->getRepository(AvailableThing::class);
+
+        return $availableThingRepository->getRandomThing();
     }
 }
