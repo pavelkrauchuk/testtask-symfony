@@ -15,7 +15,7 @@ class Prize
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private $id; /** @phpstan-ignore-line */
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'receivedPrizes')]
     #[ORM\JoinColumn(nullable: false)]
