@@ -14,12 +14,12 @@ class Bonus extends Prize
     private $id; /** @phpstan-ignore-line */
 
     #[ORM\Column(type: 'integer')]
-    private $amount;
+    private int $amount;
 
     #[ORM\Column(type: 'boolean')]
-    private $isAdmissed;
+    private bool $isAdmissed;
 
-    protected $type = 'bonus';
+    protected string $type = 'bonus';
 
     public function getAmount(): ?int
     {

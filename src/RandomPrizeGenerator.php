@@ -12,6 +12,11 @@ use Doctrine\ORM\Query\Parameter;
 
 class RandomPrizeGenerator
 {
+    /**
+     * @param array<string> $availableTypes
+     * @return Prize
+     * @throws \Exception
+     */
     public static function generate(array $availableTypes): Prize
     {
         $randomInt = random_int(0, count($availableTypes) - 1);

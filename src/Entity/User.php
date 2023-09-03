@@ -19,19 +19,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id; /** @phpstan-ignore-line */
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    private $username;
+    private string $username;
 
+    /**
+     * @var array<string>
+     */
     #[ORM\Column(type: 'json')]
-    private $roles = [];
+    private array $roles = [];
 
     #[ORM\Column(type: 'string')]
-    private $password;
+    private string $password;
 
     #[ORM\Column(type: 'integer')]
-    private $bonusCount;
+    private int $bonusCount;
 
+    /**
+     * @var Collection<int, Prize>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Prize::class)]
-    private $receivedPrizes;
+    private Collection $receivedPrizes;
 
     public function __construct()
     {
@@ -77,6 +83,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param array<string> $roles
+     * @return $this
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;

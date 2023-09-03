@@ -47,13 +47,21 @@ class MoneyRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param int $limit
+     * @return array<int, array{id: int, amount: float, isConverted: bool, isTransferred: bool, type: string}>
+     */
     public function getNotTransferred(int $limit): array
     {
         $dql = 'SELECT m FROM App\Entity\Money m WHERE m.isTransferred = false AND m.isConverted = false';
         return $this->getEntityManager()->createQuery($dql)->setMaxResults($limit)->getArrayResult();
     }
 
-    public function updateTransferred(array $arMoneyId)
+    /**
+     * @param array<int> $arMoneyId
+     * @return void
+     */
+    public function updateTransferred(array $arMoneyId): void
     {
         $dql = 'UPDATE App\Entity\Money m SET m.isTransferred = true WHERE m.id IN (' . implode(', ', $arMoneyId) . ')';
         $this->getEntityManager()->createQuery($dql)->execute();
