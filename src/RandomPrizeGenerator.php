@@ -31,7 +31,7 @@ class RandomPrizeGenerator
             'paramName' => 'available_money'
         ));
 
-        $randomMoney = random_int(1, $maxMoney->getValue());
+        $randomMoney = random_int(1, (int) $maxMoney->getValue());
         return min($randomMoney, $availableMoney->getValue());
     }
 
@@ -41,7 +41,7 @@ class RandomPrizeGenerator
             'paramName' => 'max_bonus_for_prize'
         ));
 
-        return random_int(1, $maxBonus->getValue());
+        return random_int(1, (int) $maxBonus->getValue());
     }
 
     public static function getRandomAvailableThing(EntityManagerInterface $entityManager): AvailableThing

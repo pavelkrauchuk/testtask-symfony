@@ -30,7 +30,8 @@ class MoneyController extends AbstractController
                 ));
 
                 if ($rate = filter_var($conversionRate->getValue(), FILTER_VALIDATE_FLOAT)) {
-                    $user->setBonusCount($user->getBonusCount() + ($rate * $money->getAmount()));
+                    $newBonusValue = $user->getBonusCount() + ($rate * $money->getAmount());
+                    $user->setBonusCount((int) $newBonusValue);
                     $entityManager->persist($user);
 
                     $money->setIsConverted(true);
@@ -59,7 +60,8 @@ class MoneyController extends AbstractController
                 ));
 
                 if ($amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
-                    $availableMoney->setValue($amount + $money->getAmount());
+                    $newAvailableMoney = $amount + $money->getAmount();
+                    $availableMoney->setValue((string) $newAvailableMoney);
                     $entityManager->persist($availableMoney);
                     $entityManager->remove($money);
                     $entityManager->flush();
