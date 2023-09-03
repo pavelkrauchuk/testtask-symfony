@@ -11,15 +11,15 @@ class Thing extends Prize
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private $id; /** @phpstan-ignore-line */
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'boolean')]
-    private $isShipped;
+    private bool $isShipped;
 
-    protected $type = 'thing';
+    protected string $type = 'thing';
 
     public function getName(): ?string
     {

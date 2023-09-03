@@ -8,7 +8,17 @@ class MoneyTransfer
 {
     private static string $url = 'http://test/api.php';
 
-    public static function transfer(Money|array $money)
+    /**
+     * @param Money|array<int, array{
+     *     id: int,
+     *     amount: float,
+     *     isConverted: bool,
+     *     isTransferred: bool,
+     *     type: string
+     * }> $money
+     * @return void
+     */
+    public static function transfer(Money|array $money): void
     {
         $dataEncoded = json_encode($money);
         $curl = curl_init(self::$url);

@@ -11,20 +11,20 @@ class Money extends Prize implements \JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private $id; /** @phpstan-ignore-line */
 
     #[ORM\Column(type: 'float')]
-    private $amount;
+    private float $amount;
 
     #[ORM\Column(type: 'boolean')]
-    private $isConverted;
+    private bool $isConverted;
 
     #[ORM\Column(type: 'boolean')]
-    private $isTransferred;
+    private bool $isTransferred;
 
-    protected $type = 'money';
+    protected string $type = 'money';
 
-    public function getAmount(): ?float
+    public function getAmount(): float
     {
         return $this->amount;
     }
@@ -36,7 +36,7 @@ class Money extends Prize implements \JsonSerializable
         return $this;
     }
 
-    public function getIsConverted(): ?bool
+    public function getIsConverted(): bool
     {
         return $this->isConverted;
     }
@@ -48,7 +48,7 @@ class Money extends Prize implements \JsonSerializable
         return $this;
     }
 
-    public function getIsTransferred(): ?bool
+    public function getIsTransferred(): bool
     {
         return $this->isTransferred;
     }
@@ -68,7 +68,7 @@ class Money extends Prize implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array{id: int, amount: float, isConverted: bool, isTransferred: bool, type: string}
      */
     public function jsonSerialize(): array
     {

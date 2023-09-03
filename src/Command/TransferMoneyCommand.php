@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Money;
 use App\MoneyTransfer;
+use App\Repository\MoneyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,7 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class TransferMoneyCommand extends Command
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -55,23 +56,24 @@ class TransferMoneyCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        /** @var MoneyRepository $moneyRepository */
+        $moneyRepository = $this->entityManager->getRepository(Money::class);
 
         if ($input->getOption('simulate')) {
-            $count = $this->entityManager->getRepository(Money::class)->getNotTransferredCount();
+            $count = $moneyRepository->getNotTransferredCount();
 
             $io->note(sprintf('Готовых к передаче призов: %s', $count));
         } elseif ($amount = $input->getArgument('amount')) {
             if (is_numeric($amount)) {
                 $arMoneyId = array();
 
-                $moneyRepository = $this->entityManager->getRepository(Money::class);
                 while ($arMoney = $moneyRepository->getNotTransferred((int) ($amount))) {
                     foreach ($arMoney as $money) {
                         $arMoneyId[] = $money['id'];
                     }
 
                     MoneyTransfer::transfer($arMoney);
-                    $this->entityManager->getRepository(Money::class)->updateTransferred($arMoneyId);
+                    $moneyRepository->updateTransferred($arMoneyId);
                 }
 
                 if ($arMoneyId) {

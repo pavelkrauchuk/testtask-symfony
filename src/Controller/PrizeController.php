@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\AvailableThing;
 use App\Entity\Bonus;
 use App\Entity\Money;
 use App\Entity\Parameters;
 use App\Entity\Prize;
 use App\Entity\Thing;
+use App\Entity\User;
 use App\RandomPrizeGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +21,8 @@ class PrizeController extends AbstractController
     {
         $availableTypes = Prize::getAvailableTypes($entityManager);
         $prize = RandomPrizeGenerator::generate($availableTypes);
+
+        /** @var User $currentUser */
         $currentUser = $this->getUser();
 
         if ($prize instanceof Money) {
@@ -30,14 +32,16 @@ class PrizeController extends AbstractController
                 ->setIsConverted(false)
                 ->setUser($currentUser);
 
-            $entityManager->persist($prize);
-
             $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
                 'paramName' => 'available_money'
             ));
 
-            $availableMoney->setValue($availableMoney->getValue() - $moneyValue);
-            $entityManager->persist($availableMoney);
+            if ($amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
+                $availableMoney->setValue((string) ($amount - $moneyValue));
+
+                $entityManager->persist($availableMoney);
+                $entityManager->persist($prize);
+            }
         }
 
         if ($prize instanceof Bonus) {

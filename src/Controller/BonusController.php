@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Bonus;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,8 @@ class BonusController extends AbstractController
 
         if ($this->isCsrfTokenValid('add-to-account', $submittedToken)) {
             $bonus = $entityManager->getRepository(Bonus::class)->findOneBy(array('id' => $id));
+
+            /** @var User $user */
             $user = $this->getUser();
 
             if ($bonus?->getUser() == $user && $bonus->getIsAdmissed() == false) {

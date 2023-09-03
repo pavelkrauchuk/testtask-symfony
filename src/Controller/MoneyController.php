@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Money;
 use App\Entity\Parameters;
+use App\Entity\User;
 use App\MoneyTransfer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,24 +21,24 @@ class MoneyController extends AbstractController
 
         if ($this->isCsrfTokenValid('convert-money-to-bonus', $submittedToken)) {
             $money = $entityManager->getRepository(Money::class)->findOneBy(array('id' => $id));
+            /** @var User $user */
             $user = $this->getUser();
 
-            if (
-                $money?->getUser() == $user &&
-                $money->getIsConverted() == false &&
-                $money->getIsTransferred() == false
-            ) {
+            if ($money && !$money->getIsConverted() && !$money->getIsTransferred() && $money->getUser() === $user) {
                 $conversionRate = $entityManager->getRepository(Parameters::class)->findOneBy(array(
                     'paramName' => 'bonus_to_money_conversion_rate'
                 ));
 
-                $user->setBonusCount($user->getBonusCount() + ($conversionRate->getValue() * $money->getAmount()));
-                $entityManager->persist($user);
+                if ($rate = filter_var($conversionRate->getValue(), FILTER_VALIDATE_FLOAT)) {
+                    $newBonusValue = $user->getBonusCount() + ($rate * $money->getAmount());
+                    $user->setBonusCount((int) $newBonusValue);
+                    $entityManager->persist($user);
 
-                $money->setIsConverted(true);
-                $entityManager->persist($money);
+                    $money->setIsConverted(true);
+                    $entityManager->persist($money);
 
-                $entityManager->flush();
+                    $entityManager->flush();
+                }
             }
         }
 
@@ -53,19 +54,18 @@ class MoneyController extends AbstractController
             $money = $entityManager->getRepository(Money::class)->findOneBy(array('id' => $id));
             $user = $this->getUser();
 
-            if (
-                $money?->getUser() == $user &&
-                $money->getIsConverted() == false &&
-                $money->getIsTransferred() == false
-            ) {
+            if ($money && !$money->getIsConverted() && !$money->getIsTransferred() && $money->getUser() === $user) {
                 $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
                     'paramName' => 'available_money'
                 ));
 
-                $availableMoney->setValue($availableMoney->getValue() + $money->getAmount());
-                $entityManager->persist($availableMoney);
-                $entityManager->remove($money);
-                $entityManager->flush();
+                if ($amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
+                    $newAvailableMoney = $amount + $money->getAmount();
+                    $availableMoney->setValue((string) $newAvailableMoney);
+                    $entityManager->persist($availableMoney);
+                    $entityManager->remove($money);
+                    $entityManager->flush();
+                }
             }
         }
 
