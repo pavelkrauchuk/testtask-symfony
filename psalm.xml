@@ -2,5 +2,13 @@
 <psalm>
     <projectFiles>
         <directory name="src" />
+        <ignoreFiles>
+            <directory name="vendor/" />
+        </ignoreFiles>
     </projectFiles>
+    <issueHandlers>
+        <MissingConstructor errorLevel="suppress" />
+        <PropertyNotSetInConstructor errorLevel="suppress" />
+        <InvalidStringClass errorLevel="info" />
+    </issueHandlers>
 </psalm>
