@@ -15,13 +15,14 @@ class ThingController extends AbstractController
     #[Route('/shipThing/{id}', name: 'app_thing_ship_to_user')]
     public function shipThing(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
+        /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('ship-thing-to-user', $submittedToken)) {
             $thing = $entityManager->getRepository(Thing::class)->findOneBy(array('id' => $id));
             $user = $this->getUser();
 
-            if ($thing->getUser() == $user && $thing->getIsShipped() == false) {
+            if ($thing && $thing->getUser() === $user && $thing->getIsShipped() === false) {
                 $thing->setIsShipped(true);
 
                 $entityManager->persist($thing);
@@ -39,13 +40,14 @@ class ThingController extends AbstractController
     #[Route('/rejectThing/{id}', name: 'app_thing_reject')]
     public function rejectThing(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
+        /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('reject-thing', $submittedToken)) {
             $thing = $entityManager->getRepository(Thing::class)->findOneBy(array('id' => $id));
             $user = $this->getUser();
 
-            if ($thing->getUser() === $user && $thing->getIsShipped() === false) {
+            if ($thing && $thing->getUser() === $user && $thing->getIsShipped() === false) {
                 $availableThing = new AvailableThing();
                 $availableThing->setName($thing->getName());
 

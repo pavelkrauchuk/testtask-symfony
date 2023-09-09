@@ -11,7 +11,7 @@ class Bonus extends Prize
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id; /** @phpstan-ignore-line */
+    private int $id; /** @phpstan-ignore-line */
 
     #[ORM\Column(type: 'integer')]
     private int $amount;

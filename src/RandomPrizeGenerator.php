@@ -13,6 +13,7 @@ use Doctrine\ORM\Query\Parameter;
 class RandomPrizeGenerator
 {
     /**
+     * @psalm-suppress MoreSpecificReturnType
      * @param array<string> $availableTypes
      * @return Prize
      * @throws \Exception
@@ -23,6 +24,7 @@ class RandomPrizeGenerator
         $type = $availableTypes[$randomInt];
         $class = '\\App\\Entity\\' . ucfirst($type);
 
+        /** @psalm-suppress LessSpecificReturnStatement */
         return new $class();
     }
 
@@ -36,8 +38,12 @@ class RandomPrizeGenerator
             'paramName' => 'available_money'
         ));
 
+        if (!$maxMoney || !$availableMoney) {
+            throw new \LogicException();
+        }
+
         $randomMoney = random_int(1, (int) $maxMoney->getValue());
-        return min($randomMoney, $availableMoney->getValue());
+        return min($randomMoney, (int) $availableMoney->getValue());
     }
 
     public static function getRandomBonusValue(EntityManagerInterface $entityManager): int
@@ -45,6 +51,10 @@ class RandomPrizeGenerator
         $maxBonus = $entityManager->getRepository(Parameters::class)->findOneBy(array(
             'paramName' => 'max_bonus_for_prize'
         ));
+
+        if (!$maxBonus) {
+            throw new \LogicException();
+        }
 
         return random_int(1, (int) $maxBonus->getValue());
     }

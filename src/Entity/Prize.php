@@ -15,11 +15,11 @@ class Prize
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id; /** @phpstan-ignore-line */
+    private int $id; /** @phpstan-ignore-line */
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'receivedPrizes')]
     #[ORM\JoinColumn(nullable: false)]
-    private User $user;
+    private ?User $user;
 
     protected string $type;
 
@@ -51,13 +51,13 @@ class Prize
      */
     public static function getAvailableTypes(EntityManagerInterface $entityManager): array
     {
-        $availableTypes[] = 'bonus';
+        $availableTypes = ['bonus'];
 
         $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
             'paramName' => 'available_money'
         ));
 
-        if ($availableMoney->getValue() > 0) {
+        if ($availableMoney && $availableMoney->getValue() > 0) {
             $availableTypes[] = 'money';
         }
 
@@ -65,6 +65,7 @@ class Prize
         if ($count > 0) {
             $availableTypes[] = 'thing';
         }
+
 
         return $availableTypes;
     }

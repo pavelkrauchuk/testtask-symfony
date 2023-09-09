@@ -11,7 +11,7 @@ class Parameters
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id; /** @phpstan-ignore-line */
+    private int $id; /** @phpstan-ignore-line */
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $value;

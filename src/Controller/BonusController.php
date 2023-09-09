@@ -15,6 +15,7 @@ class BonusController extends AbstractController
     #[Route('/addToAccount/{id}', name: 'app_bonus_to_account')]
     public function addToAccount(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
+        /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('add-to-account', $submittedToken)) {
@@ -23,7 +24,7 @@ class BonusController extends AbstractController
             /** @var User $user */
             $user = $this->getUser();
 
-            if ($bonus?->getUser() == $user && $bonus->getIsAdmissed() == false) {
+            if ($bonus && $bonus->getUser() === $user && $bonus->getIsAdmissed() === false) {
                 $user->setBonusCount($user->getBonusCount() + $bonus->getAmount());
                 $entityManager->persist($user);
                 $bonus->setIsAdmissed(true);
@@ -39,13 +40,14 @@ class BonusController extends AbstractController
     #[Route('/rejectBonus/{id}', name: 'app_bonus_reject')]
     public function rejectBonus(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
+        /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('reject-bonus', $submittedToken)) {
             $bonus = $entityManager->getRepository(Bonus::class)->findOneBy(array('id' => $id));
             $user = $this->getUser();
 
-            if ($bonus?->getUser() == $user && $bonus->getIsAdmissed() == false) {
+            if ($bonus && $bonus->getUser() === $user && $bonus->getIsAdmissed() === false) {
                 $entityManager->remove($bonus);
                 $entityManager->flush();
             }

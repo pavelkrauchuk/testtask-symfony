@@ -16,7 +16,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id; /** @phpstan-ignore-line */
+    private int $id; /** @phpstan-ignore-line */
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $username;
@@ -68,7 +68,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
     /**

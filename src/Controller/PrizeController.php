@@ -36,7 +36,7 @@ class PrizeController extends AbstractController
                 'paramName' => 'available_money'
             ));
 
-            if ($amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
+            if ($availableMoney && $amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
                 $availableMoney->setValue((string) ($amount - $moneyValue));
 
                 $entityManager->persist($availableMoney);
