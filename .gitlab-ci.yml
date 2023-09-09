@@ -49,3 +49,15 @@ php-stan:
     reports:
       junit: php_stan_results.xml
     when: always
+
+php-psalm:
+  stage: code-quality
+  image: pavelkrauchuk/php-fpm-8.2-symfony
+  variables:
+    APP_ENV: test
+  script:
+    - php ./vendor/bin/psalm --output-format=junit > php_psalm_results.xml
+  artifacts:
+    reports:
+      junit: php_psalm_results.xml
+    when: always
