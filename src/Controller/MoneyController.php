@@ -3,10 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Money;
-use App\Entity\Parameters;
 use App\Entity\User;
 use App\MoneyTransfer;
+use App\Repository\ParametersRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,21 +15,34 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MoneyController extends AbstractController
 {
+    /** @var ParametersRepository $parameter */
+    private ParametersRepository $parameters;
+
+    /** @var EntityManagerInterface $entityManager */
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(ParametersRepository $parameters, EntityManagerInterface $entityManager)
+    {
+        $this->parameters = $parameters;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
     #[Route('/convertMoney/{id}', name: 'app_money_to_bonus')]
-    public function convertMoney(Request $request, EntityManagerInterface $entityManager, string $id): Response
+    public function convertMoney(Request $request, string $id): Response
     {
         /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('convert-money-to-bonus', $submittedToken)) {
-            $money = $entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
+            $money = $this->entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
             /** @var User $user */
             $user = $this->getUser();
 
             if ($money && !$money->getIsConverted() && !$money->getIsTransferred() && $money->getUser() === $user) {
-                $conversionRate = $entityManager->getRepository(Parameters::class)->findOneBy([
-                    'paramName' => 'bonus_to_money_conversion_rate'
-                ]);
+                $conversionRate = $this->parameters->findByName('bonus_to_money_conversion_rate');
 
                 if (!$conversionRate) {
                     throw new \LogicException();
@@ -37,12 +51,12 @@ class MoneyController extends AbstractController
                 if ($rate = filter_var($conversionRate->getValue(), FILTER_VALIDATE_FLOAT)) {
                     $newBonusValue = $user->getBonusCount() + ($rate * $money->getAmount());
                     $user->setBonusCount((int) $newBonusValue);
-                    $entityManager->persist($user);
+                    $this->entityManager->persist($user);
 
                     $money->setIsConverted(true);
-                    $entityManager->persist($money);
+                    $this->entityManager->persist($money);
 
-                    $entityManager->flush();
+                    $this->entityManager->flush();
                 }
             }
         }
@@ -50,18 +64,21 @@ class MoneyController extends AbstractController
         return $this->redirectToRoute('app_user_profile');
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     #[Route('/rejectMoney/{id}', name: 'app_money_reject')]
-    public function rejectMoney(Request $request, EntityManagerInterface $entityManager, string $id): Response
+    public function rejectMoney(Request $request, string $id): Response
     {
         /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('reject-money', $submittedToken)) {
-            $money = $entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
+            $money = $this->entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
             $user = $this->getUser();
 
             if ($money && !$money->getIsConverted() && !$money->getIsTransferred() && $money->getUser() === $user) {
-                $availableMoney = $entityManager->getRepository(Parameters::class)->findByName('available_money');
+                $availableMoney = $this->parameters->findByName('available_money');
 
                 if (!$availableMoney) {
                     throw new \LogicException('This parameter must not be empty');
@@ -70,9 +87,9 @@ class MoneyController extends AbstractController
                 if ($amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
                     $newAvailableMoney = $amount + $money->getAmount();
                     $availableMoney->setValue((string) $newAvailableMoney);
-                    $entityManager->persist($availableMoney);
-                    $entityManager->remove($money);
-                    $entityManager->flush();
+                    $this->entityManager->persist($availableMoney);
+                    $this->entityManager->remove($money);
+                    $this->entityManager->flush();
                 }
             }
         }
@@ -81,13 +98,13 @@ class MoneyController extends AbstractController
     }
 
     #[Route('/transferMoney/{id}', name: 'app_money_to_bank')]
-    public function transferToBank(Request $request, EntityManagerInterface $entityManager, string $id): Response
+    public function transferToBank(Request $request, string $id): Response
     {
         /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('transfer-money', $submittedToken)) {
-            $money = $entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
+            $money = $this->entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
             $user = $this->getUser();
 
             if (
@@ -99,8 +116,8 @@ class MoneyController extends AbstractController
                 MoneyTransfer::transfer($money);
 
                 $money->setIsTransferred(true);
-                $entityManager->persist($money);
-                $entityManager->flush();
+                $this->entityManager->persist($money);
+                $this->entityManager->flush();
 
                 return $this->render('money/transferred.html.twig', ['prize' => $money]);
             }
