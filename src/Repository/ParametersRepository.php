@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Parameters;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -50,6 +51,7 @@ class ParametersRepository extends ServiceEntityRepository
     /**
      * @param string $parameter
      * @return Parameters|null
+     * @throws NonUniqueResultException
      */
     public function findByName(string $parameter): Parameters|null
     {
@@ -58,6 +60,6 @@ class ParametersRepository extends ServiceEntityRepository
         return $this->_em
             ->createQuery($dql)
             ->setParameter('paramName', $parameter)
-            ->execute();
+            ->getOneOrNullResult();
     }
 }
