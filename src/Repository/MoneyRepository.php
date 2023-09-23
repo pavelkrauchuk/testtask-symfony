@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Money;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,8 +22,9 @@ class MoneyRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Money $entity
+     * @param bool $flush
+     * @return void
      */
     public function add(Money $entity, bool $flush = false): void
     {
@@ -36,8 +35,9 @@ class MoneyRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Money $entity
+     * @param bool $flush
+     * @return void
      */
     public function remove(Money $entity, bool $flush = false): void
     {
@@ -74,29 +74,4 @@ class MoneyRepository extends ServiceEntityRepository
             'isConverted' => false
         ]);
     }
-
-//    /**
-//     * @return Money[] Returns an array of Money objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Money
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

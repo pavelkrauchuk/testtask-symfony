@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Thing;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,8 +22,9 @@ class ThingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Thing $entity
+     * @param bool $flush
+     * @return void
      */
     public function add(Thing $entity, bool $flush = false): void
     {
@@ -36,8 +35,9 @@ class ThingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Thing $entity
+     * @param bool $flush
+     * @return void
      */
     public function remove(Thing $entity, bool $flush = false): void
     {
@@ -46,29 +46,4 @@ class ThingRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
-//    /**
-//     * @return Thing[] Returns an array of Thing objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Thing
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

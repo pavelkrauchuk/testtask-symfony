@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Bonus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,8 +22,9 @@ class BonusRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Bonus $entity
+     * @param bool $flush
+     * @return void
      */
     public function add(Bonus $entity, bool $flush = false): void
     {
@@ -36,8 +35,9 @@ class BonusRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Bonus $entity
+     * @param bool $flush
+     * @return void
      */
     public function remove(Bonus $entity, bool $flush = false): void
     {
@@ -46,29 +46,4 @@ class BonusRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
-//    /**
-//     * @return Bonus[] Returns an array of Bonus objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Bonus
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
