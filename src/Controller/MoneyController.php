@@ -17,6 +17,7 @@ class MoneyController extends AbstractController
     #[Route('/convertMoney/{id}', name: 'app_money_to_bonus')]
     public function convertMoney(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
+        /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('convert-money-to-bonus', $submittedToken)) {
@@ -28,6 +29,10 @@ class MoneyController extends AbstractController
                 $conversionRate = $entityManager->getRepository(Parameters::class)->findOneBy(array(
                     'paramName' => 'bonus_to_money_conversion_rate'
                 ));
+
+                if (!$conversionRate) {
+                    throw new \LogicException();
+                }
 
                 if ($rate = filter_var($conversionRate->getValue(), FILTER_VALIDATE_FLOAT)) {
                     $newBonusValue = $user->getBonusCount() + ($rate * $money->getAmount());
@@ -48,6 +53,7 @@ class MoneyController extends AbstractController
     #[Route('/rejectMoney/{id}', name: 'app_money_reject')]
     public function rejectMoney(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
+        /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('reject-money', $submittedToken)) {
@@ -58,6 +64,10 @@ class MoneyController extends AbstractController
                 $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
                     'paramName' => 'available_money'
                 ));
+
+                if (!$availableMoney) {
+                    throw new \LogicException();
+                }
 
                 if ($amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
                     $newAvailableMoney = $amount + $money->getAmount();
@@ -75,6 +85,7 @@ class MoneyController extends AbstractController
     #[Route('/transferMoney/{id}', name: 'app_money_to_bank')]
     public function transferToBank(Request $request, EntityManagerInterface $entityManager, string $id): Response
     {
+        /** @var null|string $submittedToken */
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('transfer-money', $submittedToken)) {
@@ -82,9 +93,10 @@ class MoneyController extends AbstractController
             $user = $this->getUser();
 
             if (
-                $money?->getUser() == $user &&
-                $money->getIsConverted() == false &&
-                $money->getIsTransferred() == false
+                $money &&
+                $money->getUser() === $user &&
+                $money->getIsConverted() === false &&
+                $money->getIsTransferred() === false
             ) {
                 MoneyTransfer::transfer($money);
 

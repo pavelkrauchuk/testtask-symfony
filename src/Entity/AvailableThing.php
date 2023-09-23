@@ -12,7 +12,7 @@ class AvailableThing
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id; /** @phpstan-ignore-line */
+    private int $id; /** @phpstan-ignore-line */
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
@@ -22,7 +22,7 @@ class AvailableThing
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
