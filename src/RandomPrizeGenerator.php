@@ -6,9 +6,7 @@ use App\Entity\AvailableThing;
 use App\Entity\Parameters;
 use App\Entity\Prize;
 use App\Repository\AvailableThingRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\Parameter;
 
 class RandomPrizeGenerator
 {
@@ -30,16 +28,11 @@ class RandomPrizeGenerator
 
     public static function getRandomMoneyValue(EntityManagerInterface $entityManager): int
     {
-        $maxMoney = $entityManager->getRepository(Parameters::class)->findOneBy([
-            'paramName' => 'max_money_for_prize'
-        ]);
-
-        $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy([
-            'paramName' => 'available_money'
-        ]);
+        $maxMoney = $entityManager->getRepository(Parameters::class)->findByName('max_money_for_prize');
+        $availableMoney = $entityManager->getRepository(Parameters::class)->findByName('available_money');
 
         if (!$maxMoney || !$availableMoney) {
-            throw new \LogicException();
+            throw new \LogicException('This parameter must not be empty');
         }
 
         $randomMoney = random_int(1, (int) $maxMoney->getValue());
@@ -48,12 +41,10 @@ class RandomPrizeGenerator
 
     public static function getRandomBonusValue(EntityManagerInterface $entityManager): int
     {
-        $maxBonus = $entityManager->getRepository(Parameters::class)->findOneBy([
-            'paramName' => 'max_bonus_for_prize'
-        ]);
+        $maxBonus = $entityManager->getRepository(Parameters::class)->findByName('max_bonus_for_prize');
 
         if (!$maxBonus) {
-            throw new \LogicException();
+            throw new \LogicException('This parameter must not be empty');
         }
 
         return random_int(1, (int) $maxBonus->getValue());

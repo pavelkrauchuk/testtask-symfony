@@ -61,12 +61,10 @@ class MoneyController extends AbstractController
             $user = $this->getUser();
 
             if ($money && !$money->getIsConverted() && !$money->getIsTransferred() && $money->getUser() === $user) {
-                $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy([
-                    'paramName' => 'available_money'
-                ]);
+                $availableMoney = $entityManager->getRepository(Parameters::class)->findByName('available_money');
 
                 if (!$availableMoney) {
-                    throw new \LogicException();
+                    throw new \LogicException('This parameter must not be empty');
                 }
 
                 if ($amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {

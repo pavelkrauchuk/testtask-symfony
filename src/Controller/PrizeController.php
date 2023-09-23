@@ -32,9 +32,7 @@ class PrizeController extends AbstractController
                 ->setIsConverted(false)
                 ->setUser($currentUser);
 
-            $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy([
-                'paramName' => 'available_money'
-            ]);
+            $availableMoney = $entityManager->getRepository(Parameters::class)->findByName('available_money');
 
             if ($availableMoney && $amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
                 $availableMoney->setValue((string) ($amount - $moneyValue));
