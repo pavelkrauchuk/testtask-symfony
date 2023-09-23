@@ -46,4 +46,18 @@ class ParametersRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+
+    /**
+     * @param string $parameter
+     * @return Parameters|null
+     */
+    public function findByName(string $parameter): Parameters|null
+    {
+        $dql = /** @lang DQL */ 'SELECT p FROM App\Entity\Parameters p WHERE p.paramName = :paramName';
+
+        return $this->_em
+            ->createQuery($dql)
+            ->setParameter('paramName', $parameter)
+            ->execute();
+    }
 }
