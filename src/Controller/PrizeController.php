@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Bonus;
 use App\Entity\Money;
-use App\Entity\Parameters;
-use App\Entity\Prize;
 use App\Entity\Thing;
 use App\Entity\User;
-use App\RandomPrizeGenerator;
+use App\Factory\PrizeFactory;
+use App\Repository\ParametersRepository;
+use App\Service\RandomPrizeValueGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,52 +16,74 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PrizeController extends AbstractController
 {
+    /** @var PrizeFactory $prizeFactory */
+    private PrizeFactory $prizeFactory;
+
+    /** @var RandomPrizeValueGenerator $prizeValueGenerator */
+    private RandomPrizeValueGenerator $prizeValueGenerator;
+
+    /** @var ParametersRepository $parameters */
+    private ParametersRepository $parameters;
+
+    /** @var EntityManagerInterface $entityManager */
+    private EntityManagerInterface $entityManager;
+    public function __construct(
+        PrizeFactory $prizeFactory,
+        RandomPrizeValueGenerator $prizeValueGenerator,
+        ParametersRepository $parameters,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->prizeFactory = $prizeFactory;
+        $this->prizeValueGenerator = $prizeValueGenerator;
+        $this->parameters = $parameters;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @throws \Exception
+     */
     #[Route('/getprize', name: 'app_get_prize')]
-    public function getPrize(EntityManagerInterface $entityManager): Response
+    public function getPrize(): Response
     {
-        $availableTypes = Prize::getAvailableTypes($entityManager);
-        $prize = RandomPrizeGenerator::generate($availableTypes);
+        $prize = $this->prizeFactory->create();
 
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
         if ($prize instanceof Money) {
-            $moneyValue = RandomPrizeGenerator::getRandomMoneyValue($entityManager);
+            $moneyValue = $this->prizeValueGenerator->getRandomMoneyValue();
             $prize->setAmount($moneyValue)
                 ->setIsTransferred(false)
                 ->setIsConverted(false)
                 ->setUser($currentUser);
 
-            $availableMoney = $entityManager->getRepository(Parameters::class)->findByName('available_money');
+            $availableMoney = $this->parameters->findByName('available_money');
 
             if ($availableMoney && $amount = filter_var($availableMoney->getValue(), FILTER_VALIDATE_FLOAT)) {
                 $availableMoney->setValue((string) ($amount - $moneyValue));
 
-                $entityManager->persist($availableMoney);
-                $entityManager->persist($prize);
+                $this->entityManager->persist($availableMoney);
             }
         }
 
         if ($prize instanceof Bonus) {
-            $bonusValue = RandomPrizeGenerator::getRandomBonusValue($entityManager);
+            $bonusValue = $this->prizeValueGenerator->getRandomBonusValue();
             $prize->setAmount($bonusValue)
                 ->setIsAdmissed(false)
                 ->setUser($currentUser);
-
-            $entityManager->persist($prize);
         }
 
         if ($prize instanceof Thing) {
-            $thing = RandomPrizeGenerator::getRandomAvailableThing($entityManager);
+            $thing = $this->prizeValueGenerator->getRandomAvailableThing();
             $prize->setName($thing->getName())
                 ->setIsShipped(false)
                 ->setUser($currentUser);
 
-            $entityManager->persist($prize);
-            $entityManager->remove($thing);
+            $this->entityManager->remove($thing);
         }
 
-        $entityManager->flush();
+        $this->entityManager->persist($prize);
+        $this->entityManager->flush();
 
         return $this->redirectToRoute('app_user_profile');
     }
