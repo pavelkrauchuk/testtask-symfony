@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Parameters;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,8 +22,9 @@ class ParametersRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Parameters $entity
+     * @param bool $flush
+     * @return void
      */
     public function add(Parameters $entity, bool $flush = false): void
     {
@@ -36,8 +35,9 @@ class ParametersRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Parameters $entity
+     * @param bool $flush
+     * @return void
      */
     public function remove(Parameters $entity, bool $flush = false): void
     {
@@ -46,29 +46,4 @@ class ParametersRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
-//    /**
-//     * @return Parameters[] Returns an array of Parameters objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Parameters
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

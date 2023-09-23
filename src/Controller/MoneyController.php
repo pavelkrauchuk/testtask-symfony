@@ -21,14 +21,14 @@ class MoneyController extends AbstractController
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('convert-money-to-bonus', $submittedToken)) {
-            $money = $entityManager->getRepository(Money::class)->findOneBy(array('id' => $id));
+            $money = $entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
             /** @var User $user */
             $user = $this->getUser();
 
             if ($money && !$money->getIsConverted() && !$money->getIsTransferred() && $money->getUser() === $user) {
-                $conversionRate = $entityManager->getRepository(Parameters::class)->findOneBy(array(
+                $conversionRate = $entityManager->getRepository(Parameters::class)->findOneBy([
                     'paramName' => 'bonus_to_money_conversion_rate'
-                ));
+                ]);
 
                 if (!$conversionRate) {
                     throw new \LogicException();
@@ -57,13 +57,13 @@ class MoneyController extends AbstractController
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('reject-money', $submittedToken)) {
-            $money = $entityManager->getRepository(Money::class)->findOneBy(array('id' => $id));
+            $money = $entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
             $user = $this->getUser();
 
             if ($money && !$money->getIsConverted() && !$money->getIsTransferred() && $money->getUser() === $user) {
-                $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
+                $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy([
                     'paramName' => 'available_money'
-                ));
+                ]);
 
                 if (!$availableMoney) {
                     throw new \LogicException();
@@ -89,7 +89,7 @@ class MoneyController extends AbstractController
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('transfer-money', $submittedToken)) {
-            $money = $entityManager->getRepository(Money::class)->findOneBy(array('id' => $id));
+            $money = $entityManager->getRepository(Money::class)->findOneBy(['id' => $id]);
             $user = $this->getUser();
 
             if (
@@ -104,7 +104,7 @@ class MoneyController extends AbstractController
                 $entityManager->persist($money);
                 $entityManager->flush();
 
-                return $this->render('money/transferred.html.twig', array('prize' => $money));
+                return $this->render('money/transferred.html.twig', ['prize' => $money]);
             }
         }
 

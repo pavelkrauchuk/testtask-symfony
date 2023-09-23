@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Prize;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,8 +22,9 @@ class PrizeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Prize $entity
+     * @param bool $flush
+     * @return void
      */
     public function add(Prize $entity, bool $flush = false): void
     {
@@ -36,8 +35,9 @@ class PrizeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Prize $entity
+     * @param bool $flush
+     * @return void
      */
     public function remove(Prize $entity, bool $flush = false): void
     {
@@ -46,29 +46,4 @@ class PrizeRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
-//    /**
-//     * @return Prize[] Returns an array of Prize objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Prize
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

@@ -19,7 +19,7 @@ class BonusController extends AbstractController
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('add-to-account', $submittedToken)) {
-            $bonus = $entityManager->getRepository(Bonus::class)->findOneBy(array('id' => $id));
+            $bonus = $entityManager->getRepository(Bonus::class)->findOneBy(['id' => $id]);
 
             /** @var User $user */
             $user = $this->getUser();
@@ -44,7 +44,7 @@ class BonusController extends AbstractController
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('reject-bonus', $submittedToken)) {
-            $bonus = $entityManager->getRepository(Bonus::class)->findOneBy(array('id' => $id));
+            $bonus = $entityManager->getRepository(Bonus::class)->findOneBy(['id' => $id]);
             $user = $this->getUser();
 
             if ($bonus && $bonus->getUser() === $user && $bonus->getIsAdmissed() === false) {

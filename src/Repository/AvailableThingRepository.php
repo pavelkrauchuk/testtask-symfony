@@ -6,7 +6,6 @@ use App\Entity\AvailableThing;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,8 +24,9 @@ class AvailableThingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param AvailableThing $entity
+     * @param bool $flush
+     * @return void
      */
     public function add(AvailableThing $entity, bool $flush = false): void
     {
@@ -37,8 +37,9 @@ class AvailableThingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param AvailableThing $entity
+     * @param bool $flush
+     * @return void
      */
     public function remove(AvailableThing $entity, bool $flush = false): void
     {
@@ -71,29 +72,4 @@ class AvailableThingRepository extends ServiceEntityRepository
 
         return $this->getEntityManager()->getReference(AvailableThing::class, $thing->getId());
     }
-
-//    /**
-//     * @return AvailableThing[] Returns an array of AvailableThing objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?AvailableThing
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
