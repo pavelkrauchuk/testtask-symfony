@@ -72,12 +72,12 @@ class Money extends Prize implements \JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array(
+        return [
             'id' => $this->id,
             'amount' => $this->amount,
             'isConverted' => $this->isConverted,
             'isTransferred' => $this->isTransferred,
             'type' => $this->type,
-        );
+        ];
     }
 }

@@ -25,10 +25,10 @@ class MoneyTransfer
         curl_setopt($curl, CURLOPT_POSTFIELDS, $dataEncoded);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+        curl_setopt($curl, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
             'Content-Length: ' . strlen($dataEncoded),
-        ));
+        ]);
 
         $result = curl_exec($curl);
     }

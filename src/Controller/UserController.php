@@ -13,7 +13,7 @@ class UserController extends AbstractController
     #[Route('/profile', name: 'app_user_profile')]
     public function getListPrizes(EntityManagerInterface $entityManager): Response
     {
-        $prizes = $entityManager->getRepository(Prize::class)->findBy(array('user' => $this->getUser()));
+        $prizes = $entityManager->getRepository(Prize::class)->findBy(['user' => $this->getUser()]);
 
         return $this->render('user/index.html.twig', [
             'prizes' => $prizes,

@@ -53,15 +53,15 @@ class Prize
     {
         $availableTypes = ['bonus'];
 
-        $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
+        $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy([
             'paramName' => 'available_money'
-        ));
+        ]);
 
         if ($availableMoney && $availableMoney->getValue() > 0) {
             $availableTypes[] = 'money';
         }
 
-        $count = $entityManager->getRepository(AvailableThing::class)->count(array());
+        $count = $entityManager->getRepository(AvailableThing::class)->count([]);
         if ($count > 0) {
             $availableTypes[] = 'thing';
         }

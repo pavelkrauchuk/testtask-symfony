@@ -30,13 +30,13 @@ class RandomPrizeGenerator
 
     public static function getRandomMoneyValue(EntityManagerInterface $entityManager): int
     {
-        $maxMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
+        $maxMoney = $entityManager->getRepository(Parameters::class)->findOneBy([
             'paramName' => 'max_money_for_prize'
-        ));
+        ]);
 
-        $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy(array(
+        $availableMoney = $entityManager->getRepository(Parameters::class)->findOneBy([
             'paramName' => 'available_money'
-        ));
+        ]);
 
         if (!$maxMoney || !$availableMoney) {
             throw new \LogicException();
@@ -48,9 +48,9 @@ class RandomPrizeGenerator
 
     public static function getRandomBonusValue(EntityManagerInterface $entityManager): int
     {
-        $maxBonus = $entityManager->getRepository(Parameters::class)->findOneBy(array(
+        $maxBonus = $entityManager->getRepository(Parameters::class)->findOneBy([
             'paramName' => 'max_bonus_for_prize'
-        ));
+        ]);
 
         if (!$maxBonus) {
             throw new \LogicException();

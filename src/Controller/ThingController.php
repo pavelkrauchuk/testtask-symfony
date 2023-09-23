@@ -19,7 +19,7 @@ class ThingController extends AbstractController
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('ship-thing-to-user', $submittedToken)) {
-            $thing = $entityManager->getRepository(Thing::class)->findOneBy(array('id' => $id));
+            $thing = $entityManager->getRepository(Thing::class)->findOneBy(['id' => $id]);
             $user = $this->getUser();
 
             if ($thing && $thing->getUser() === $user && $thing->getIsShipped() === false) {
@@ -44,7 +44,7 @@ class ThingController extends AbstractController
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('reject-thing', $submittedToken)) {
-            $thing = $entityManager->getRepository(Thing::class)->findOneBy(array('id' => $id));
+            $thing = $entityManager->getRepository(Thing::class)->findOneBy(['id' => $id]);
             $user = $this->getUser();
 
             if ($thing && $thing->getUser() === $user && $thing->getIsShipped() === false) {

@@ -69,10 +69,10 @@ class MoneyRepository extends ServiceEntityRepository
 
     public function getNotTransferredCount(): int
     {
-        return $this->getEntityManager()->getRepository(Money::class)->count(array(
+        return $this->getEntityManager()->getRepository(Money::class)->count([
             'isTransferred' => false,
             'isConverted' => false
-        ));
+        ]);
     }
 
 //    /**
