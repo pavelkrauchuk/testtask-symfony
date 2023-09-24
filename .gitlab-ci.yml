@@ -17,6 +17,7 @@ variables:
 stages:
   - build
   - code-quality
+  - security
 
 composer:
   stage: build
@@ -60,4 +61,19 @@ php-psalm:
   artifacts:
     reports:
       junit: php_psalm_results.xml
+    when: always
+
+security-checker:
+  stage: security
+  image: pavelkrauchuk/php-fpm-8.2-symfony
+  variables:
+    APP_ENV: test
+  script:
+    - wget https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.6/local-php-security-checker_2.0.6_linux_amd64
+    - mv local-php-security-checker_2.0.6_linux_amd64 local-php-security-checker
+    - chmod +x local-php-security-checker
+    - ./local-php-security-checker --no-dev --format=junit > security_checker_results.xml
+  artifacts:
+    reports:
+      junit: security_checker_results.xml
     when: always
