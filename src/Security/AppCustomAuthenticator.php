@@ -33,8 +33,6 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
         /** @var string $username */
         $username = $request->request->get('username', '');
 
-        $request->getSession()->set(Security::LAST_USERNAME, $username);
-
         /** @var null|string $token */
         $token = $request->request->get('_csrf_token');
         /** @var string $password */
