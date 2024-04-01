@@ -18,6 +18,7 @@ stages:
   - build
   - code-quality
   - security
+  - deploy
 
 composer:
   stage: build
@@ -77,3 +78,14 @@ security-checker:
     reports:
       junit: security_checker_results.xml
     when: always
+
+ansible-test:
+  stage: deploy
+  image: pavelkrauchuk/ansible:latest
+  script:
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - chmod 400 ~/.ssh/id_rsa
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+    - ansible -i deploy/inventory all -m ping -vvv
